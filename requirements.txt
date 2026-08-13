@@ -1,0 +1,10 @@
+PyYAML>=6.0
+python-dotenv>=1.0
+matplotlib>=3.8
+
+neo4j>=5.20
+
+# Uncomment the drivers for any other databases you configure in config/databases.yaml
+# gremlinpython>=3.7
+# pyTigerGraph>=1.6
+# amazon-neptune-tools

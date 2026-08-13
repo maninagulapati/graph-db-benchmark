@@ -1,0 +1,59 @@
+# Benchmark workload and statistical-method configuration.
+# Nothing database-specific lives here — only the shape of the experiment.
+
+dataset:
+  name: null                     # e.g. "pokec-social-network"
+  path: data/dataset.json        # normalized dataset, see src/datasets/loader.py
+  minimum_relationships: 100000
+
+# Used to seed a fresh random.Random(seed) per database for the sequential
+# single-client workloads (warm-up, point/indexed lookup, traversal), so
+# every database in a run is walked through the same sequence of starting
+# nodes (README "Randomized Starting Nodes") instead of independently
+# random ones. Not used for the concurrent mixed workload, where exact
+# reproducibility isn't the goal and sharing one RNG across threads would
+# introduce its own thread-safety problems.
+random_seed: 42
+
+warmup:
+  iterations: 20                 # warm-up queries executed and discarded before measuring
+
+benchmark:
+  iterations: 100                # measured iterations per single-client workload
+
+lookups:
+  point:
+    sample_size: 200             # number of random valid node ids to query
+  indexed:
+    property: country
+    sample_size: 200
+
+traversal:
+  depths: [1, 2, 3]
+  sample_size: 200               # number of random starting nodes, shared across databases
+
+aggregation:
+  group_by: country
+
+mixed_workload:
+  read_percentage: 80
+  write_percentage: 20
+  duration_seconds: 30
+  concurrency_levels: [1, 10, 40]
+
+timeouts:
+  connection_seconds: 10
+  query_seconds: 30
+
+metrics:
+  - p50
+  - p95
+  - p99
+  - throughput
+  - error_rate
+
+output:
+  raw_results: true
+  csv: true
+  json: true
+  charts: true

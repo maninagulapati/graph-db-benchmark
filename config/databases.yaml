@@ -1,0 +1,96 @@
+# One entry per graph database platform under test.
+#
+# `adapter` must reference an importable class as "module.path:ClassName",
+# resolved against src/adapters/. `credentials_env` lists the environment
+# variable names (defined in .env, never in this file) the adapter reads
+# at connect() time.
+#
+# Fill in vcpu/ram/storage/deployment/region/tier for every database before
+# running experiments — resource fairness is part of the methodology
+# (see README section "Environment and Resources").
+
+databases:
+  - name: cognodb
+    enabled: true   # COGNODB_URI/USERNAME/PASSWORD are set in .env
+    adapter: cognodb_adapter:CognoDBAdapter
+    credentials_env:
+      - COGNODB_URI
+      - COGNODB_USERNAME
+      - COGNODB_PASSWORD
+    resources:
+      vcpu: "burst to 0.5"
+      ram_gb: 0.5
+      storage_gb: 1
+      deployment: "managed (CognoDB Cloud, free tier)"
+      region: "single fixed region (not disclosed in this write-up)"
+      tier: "Free (c0)"
+      notes: >
+        Engine v0.9.11. Instance identifiers withheld from this write-up.
+        Console shows 512 MB RAM for this tier; assignment docs mention
+        256 MB elsewhere — reporting the console's advertised value since
+        it reflects what's actually provisioned.
+
+  - name: kuzu
+    enabled: true   # embedded — no credentials needed, just the kuzu package
+    adapter: kuzu_adapter:KuzuAdapter
+    credentials_env: []
+    resources:
+      vcpu: "shares host CPU (12 logical cores on this machine)"
+      ram_gb: "shares host RAM (~15 GB on this machine)"
+      storage_gb: "local disk, not a fixed allocation"
+      deployment: "embedded (in-process, no server)"
+      region: "n/a — runs in the benchmark client's own process"
+      tier: "n/a — open-source, no managed tiers"
+      notes: >
+        Not a fixed allocation like CognoDB's free tier — it's whatever
+        this machine happens to have free at run time. This is a
+        structural resource-fairness asymmetry with CognoDB, not just a
+        numbers difference, and is called out as such in Limitations.
+
+  - name: database_c
+    enabled: false
+    adapter: database_c:DatabaseCAdapter
+    credentials_env:
+      - DATABASE_C_URI
+      - DATABASE_C_USERNAME
+      - DATABASE_C_PASSWORD
+    resources:
+      vcpu: null
+      ram_gb: null
+      storage_gb: null
+      deployment: null
+      region: null
+      tier: null
+      notes: null
+
+  - name: database_d
+    enabled: false
+    adapter: database_d:DatabaseDAdapter
+    credentials_env:
+      - DATABASE_D_URI
+      - DATABASE_D_USERNAME
+      - DATABASE_D_PASSWORD
+    resources:
+      vcpu: null
+      ram_gb: null
+      storage_gb: null
+      deployment: null
+      region: null
+      tier: null
+      notes: null
+
+  - name: database_e
+    enabled: false
+    adapter: database_e:DatabaseEAdapter
+    credentials_env:
+      - DATABASE_E_URI
+      - DATABASE_E_USERNAME
+      - DATABASE_E_PASSWORD
+    resources:
+      vcpu: null
+      ram_gb: null
+      storage_gb: null
+      deployment: null
+      region: null
+      tier: null
+      notes: null
